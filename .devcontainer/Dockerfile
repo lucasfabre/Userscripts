@@ -9,7 +9,7 @@ RUN \
     apt update && apt install -y git zsh curl gnupg sudo build-essential \
     # Create developement user
     && groupadd --gid ${USER_GID} ${USERNAME} \
-    && useradd -s /bin/zsh --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+    && useradd -s /usr/bin/zsh --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
     # Add sudo support for the non-root user
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \

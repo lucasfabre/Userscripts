@@ -9,7 +9,7 @@ function closeSignInDialog() {
             dialog.querySelectorAll("#text").forEach(element => {
                 if (!isHidden(element) && element.innerHTML.includes('No thanks')) {
                     window.setTimeout(element.click.bind(element), 300);
-                    logger.log(`Closing Sign In dialog`, element)
+                    logger.log(`Closing Sign In dialog`)
                 }
             });
         } catch (e) {
@@ -19,13 +19,14 @@ function closeSignInDialog() {
 }
 
 function closeCookiesDialog() {
-    logger.log(window.location.host, window.location.host.includes("consent."))
     if (window.location.host.includes("consent.")) {
         let introAgreeButton = document.getElementById('introAgreeButton')
-        introAgreeButton.click()
+        if (introAgreeButton) {
+            logger.log(`Closing cookies Dialog`)
+            introAgreeButton.click()
+        }
     }
 }
-
 
 function closeVideoPausedDialog() {
     let dialogQueryResult = document.querySelectorAll('yt-confirm-dialog-renderer');
@@ -34,7 +35,7 @@ function closeVideoPausedDialog() {
             dialog.querySelectorAll("yt-formatted-string").forEach(element => {
                 if (!isHidden(element) && element.innerHTML.includes('Yes')) {
                     window.setTimeout(element.click.bind(element), 300);
-                    logger.log(`Closing Video Paused Dialog`, element)
+                    logger.log(`Closing Video Paused Dialog`)
                 }
             });
         } catch (e) {
@@ -57,7 +58,7 @@ function onReady() {
     }
 }
 
-function runPeriodicaly() {
+function onInterval() {
     for (let c of arguments) {
         setInterval(c, 200);
     }
@@ -67,7 +68,7 @@ onReady(
     closeCookiesDialog
 )
 
-runPeriodicaly(
+onInterval(
     closeSignInDialog,
     closeVideoPausedDialog
 )

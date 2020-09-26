@@ -10,10 +10,18 @@ const options = {
     watch: false,
     minify: true,
     sourceMaps: false,
-    outFile: `${package.name}.js`
+    outFile: `${package.name}.user.js`
 };
 
 const bundler = new Bundler(entrypoint, options);
+
+function writeBuffer(fd, buf) {
+    // Replace package name and version
+    buf = buf.replace("##PACKAGE_NAME##", package.name)
+    buf = buf.replace("##PACKAGE_VERSION##", package.version)
+    buf = buf.replace("##PACKAGE_AUTHOR##", package.author)
+    fs.appendFileSync(fd, buf)
+}
 
 bundler.on('bundled', (bundle) => {
     let buffersToWrite = [
@@ -24,12 +32,13 @@ bundler.on('bundled', (bundle) => {
     ] 
     let fd = fs.openSync(bundle.name, 'w+');
     for (buf of buffersToWrite) {
-        // Replace package name and version
-        buf = buf.replace("##PACKAGE_NAME##", package.name)
-        buf = buf.replace("##PACKAGE_VERSION##", package.version)
-        buf = buf.replace("##PACKAGE_AUTHOR##", package.author)
-        fs.appendFileSync(fd, buf)
+        writeBuffer(fd, buf)
     }
+    fs.closeSync(fd);
+
+    // Create meta file
+    fd = fs.openSync(bundle.name.replace(/\.user\.js/, '') + ".meta.js", 'w+');
+    writeBuffer(fd, fs.readFileSync("./src/userscript_header.js", { encoding: 'utf8' }))
     fs.closeSync(fd);
 });
 

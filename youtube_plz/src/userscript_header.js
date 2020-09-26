@@ -10,4 +10,7 @@
 // @match        https://consent.youtube.com/*
 // @match        http://consent.google.com/*
 // @match        https://consent.google.com/*
+// @updateURL    https://github.com/lucasfabre/Userscripts/releases/latest/download/youtube_plz.meta.js
+// @downloadURL  https://github.com/lucasfabre/Userscripts/releases/latest/download/youtube_plz.user.js
+// @homepage     https://github.com/lucasfabre/Userscripts
 // ==/UserScript==
