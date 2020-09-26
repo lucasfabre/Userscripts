@@ -1,0 +1,36 @@
+#!/usr/bin/node
+
+const Bundler = require('parcel-bundler');
+const fs = require('fs')
+
+const entrypoint = 'src/main.js';
+const package = require('./package.json') 
+
+const options = {
+    watch: false,
+    minify: true,
+    sourceMaps: false,
+    outFile: `${package.name}.js`
+};
+
+const bundler = new Bundler(entrypoint, options);
+
+bundler.on('bundled', (bundle) => {
+    let buffersToWrite = [
+        fs.readFileSync("./src/userscript_header.js", { encoding: 'utf8' }),
+        "\n(function(){\n",
+        fs.readFileSync(bundle.name, { encoding: 'utf8' }),
+        "\n})()"
+    ] 
+    let fd = fs.openSync(bundle.name, 'w+');
+    for (buf of buffersToWrite) {
+        // Replace package name and version
+        buf = buf.replace("##PACKAGE_NAME##", package.name)
+        buf = buf.replace("##PACKAGE_VERSION##", package.version)
+        buf = buf.replace("##PACKAGE_AUTHOR##", package.author)
+        fs.appendFileSync(fd, buf)
+    }
+    fs.closeSync(fd);
+});
+
+bundler.bundle();

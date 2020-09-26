@@ -1,0 +1,14 @@
+{
+  "name": "youtube_plz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "node ./build"
+  },
+  "author": "Lucas Fabre",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
