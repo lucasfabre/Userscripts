@@ -44,6 +44,14 @@ function closeVideoPausedDialog() {
     })
 }
 
+function closeGetTheBestYouTubeExperiencePlayerError() {
+    let notNowButton = document.querySelector('.yt-player-error-message-renderer > #dismiss-button > yt-button-renderer > a')
+    if (notNowButton && notNowButton.innerHTML.includes("Not Now")) {
+        logger.log(`Closing Get the best YouTube experience Player error`)
+        notNowButton.click()
+    }
+}
+
 function isHidden(el) {
     return (el.offsetParent === null)
 }
@@ -70,5 +78,6 @@ onReady(
 
 onInterval(
     closeSignInDialog,
-    closeVideoPausedDialog
+    closeVideoPausedDialog,
+    closeGetTheBestYouTubeExperiencePlayerError
 )
