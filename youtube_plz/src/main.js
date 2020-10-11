@@ -1,6 +1,8 @@
-'use-strict'
+import logger from './logger';
 
-import logger from './logger'
+let ytpState = { // Store the global status
+    intervalIdByFunction: {}
+};
 
 function closeSignInDialog() {
     let dialogQueryResult = document.querySelectorAll('[role="dialog"][prevent-autonav="true"]');
@@ -9,21 +11,21 @@ function closeSignInDialog() {
             dialog.querySelectorAll("#text").forEach(element => {
                 if (!isHidden(element) && element.innerHTML.includes('No thanks')) {
                     window.setTimeout(element.click.bind(element), 300);
-                    logger.log(`Closing Sign In dialog`)
+                    logger.log(`Closing Sign In dialog`);
                 }
             });
         } catch (e) {
-            logger.error(`Some error occured while [closeSignInDialog()]`, e)
+            logger.error(`Some error occured while [closeSignInDialog()]`, e);
         }
     })
 }
 
 function closeCookiesDialog() {
     if (window.location.host.includes("consent.")) {
-        let introAgreeButton = document.getElementById('introAgreeButton')
+        let introAgreeButton = document.getElementById('introAgreeButton');
         if (introAgreeButton) {
             logger.log(`Closing cookies Dialog`)
-            introAgreeButton.click()
+            introAgreeButton.click();
         }
     }
 }
@@ -35,20 +37,25 @@ function closeVideoPausedDialog() {
             dialog.querySelectorAll("yt-formatted-string").forEach(element => {
                 if (!isHidden(element) && element.innerHTML.includes('Yes')) {
                     window.setTimeout(element.click.bind(element), 300);
-                    logger.log(`Closing Video Paused Dialog`)
+                    logger.log(`Closing Video Paused Dialog`);
                 }
             });
         } catch (e) {
-            logger.error(`Some error occured while [closeVideoPausedDialog()]`, e)
+            logger.error(`Some error occured while [closeVideoPausedDialog()]`, e);
         }
     })
 }
 
-function closeGetTheBestYouTubeExperiencePlayerError() {
-    let notNowButton = document.querySelector('.yt-player-error-message-renderer > #dismiss-button > yt-button-renderer > a')
+let closeGetTheBestYouTubeExperiencePlayerError = function () {
+    let notNowButton = document.querySelector('.yt-player-error-message-renderer > #dismiss-button > yt-button-renderer > a');
     if (notNowButton && notNowButton.innerHTML.includes("Not Now")) {
         logger.log(`Closing Get the best YouTube experience Player error`)
-        notNowButton.click()
+        notNowButton.click();
+        // delete the function from onInterval
+        logger.log(ytpState.intervalIdByFunction)
+        const intervalId = ytpState.intervalIdByFunction[closeGetTheBestYouTubeExperiencePlayerError];
+        clearInterval(intervalId);
+        logger.log("removed")
     }
 }
 
@@ -68,7 +75,8 @@ function onReady() {
 
 function onInterval() {
     for (let c of arguments) {
-        setInterval(c, 200);
+        let intervalId = setInterval(c, 200);
+        ytpState.intervalIdByFunction[c] = intervalId;
     }
 }
 
